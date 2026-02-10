@@ -1,25 +1,47 @@
 # HP-Laptop-WSL-Files
 
-A collection of Bash utilities for managing media files and Windows drive mounts from a WSL environment. The scripts are designed to be run from a terminal and are grouped under the `tools/` directory.
+Bash utilities for media-file cleanup/organization and Windows drive mounting in WSL. Most scripts are in `tools/` and are intended to be run directly from a terminal.
 
 ## Getting started
-- Set `TOOLS_DIR` to the absolute path of the `tools/` directory so wrapper scripts can find shared helpers.
-- Most scripts can be executed directly once they are marked executable.
+1. Set `TOOLS_DIR` so wrapper scripts can find shared helpers.
+2. Ensure scripts are executable (`chmod +x tools/* tools/base_scripts/*` if needed).
 
 ```bash
 export TOOLS_DIR=/workspace/HP-Laptop-WSL-Files/tools
 ```
 
-## Tooling overview
-- **Drive mounting**: `tools/mount-drive-{d,e,f}` and `tools/mount-drives` mount Windows drives using `tools/base_scripts/mount-drive-base`.
-- **Cleanup pipeline**: `tools/process_files` runs `remove-nfo`, `flatten-input`, and `sort-and-playlist` in sequence.
-- **Flattening media folders**: `tools/flatten-input` collapses single-file subfolders and routes multi-file or duplicate cases to `0-MultiFile` or `0-PossibleDuplicate`.
-- **Sorting + playlists**: `tools/sort-and-playlist` groups files by first letter and creates VLC-compatible playlists.
-- **File removal**: `tools/remove-nfo` and `tools/remove-m3u` wrap `tools/base_scripts/remove-file`.
-- **Downsample video**: `tools/downsample-video` uses `ffmpeg` to compress `.mp4` files into an `output/` directory and delete originals.
-- **Search wrapper**: `tools/get-all-of-interest-wrapper` wraps the external `get-all-of-interest` command to gather files into a target directory.
+## Requirements
+- WSL environment with Windows drives available at `/mnt/<drive_letter>`.
+- `ffmpeg` for `tools/downsample-video`.
+- `get-all-of-interest` on `PATH` for `tools/get-all-of-interest-wrapper`.
 
-## Dependencies
-- `ffmpeg` is required for `tools/downsample-video`.
-- `get-all-of-interest` must be installed and on `PATH` for `tools/get-all-of-interest-wrapper`.
-- Scripts assume Windows drives are mounted under `/mnt/<drive_letter>` in WSL.
+## Script overview
+
+### Cleanup and organization
+- `tools/process_files`: Runs `remove-nfo`, `flatten-input`, and `sort-and-playlist` in sequence.
+- `tools/prep-folders`: For each immediate subdirectory, creates `0-Watched` and runs `flatten-input` inside that directory.
+- `tools/flatten-input`: Processes subfolders to:
+  - move a single media file (`*.[mM]*`) up one level,
+  - move multi-match folders to `0-MultiFile`,
+  - move potential duplicates to `0-PossibleDuplicate`,
+  - remove empty `0-*` folders (except `0-Downloads`, `0-Keep`, `0-Watched`).
+- `tools/sort-and-playlist`: Moves media files (`*.[mM]*`) into `a-z` folders by first character and generates `00-playlist-<letter>.m3u` files.
+- `tools/downsample-video`: Transcodes `.mp4` files to lower bitrate in `output/`, then deletes originals.
+
+### File removal helpers
+- `tools/remove-nfo [--include-0-downloads] [directory]`: Removes `*.nfo` recursively using `tools/base_scripts/remove-file`.
+- `tools/remove-m3u [directory]`: Removes `*.m3u` recursively using `tools/base_scripts/remove-file`.
+- `tools/p-remove-nfo [--include-0-downloads]`: Runs `remove-nfo` in parallel against `/mnt/d`, `/mnt/e`, and `/mnt/f`.
+- `tools/base_scripts/remove-file [--include-0-downloads] [directory] [pattern]`: Generic recursive delete utility; excludes `0-Downloads` by default.
+
+### Drive mounting
+- `tools/mount-drive-d`, `tools/mount-drive-e`, `tools/mount-drive-f`: Mount one Windows drive each via `tools/base_scripts/mount-drive-base`.
+- `tools/mount-drives`: Mounts drives `d`, `e`, and `f` in one call.
+- `tools/base_scripts/mount-drive-base <drive_letter>`: Core mount logic using `drvfs`.
+
+### Search and move utilities
+- `tools/get-all-of-interest-wrapper [-m maxdepth] [-t target_dir] [-e exclude_word] word...`: Wrapper around external `get-all-of-interest`.
+- `tools/move-all [-m maxdepth] [-t target_dir] [-e exclude_word] word...`: Finds files containing all words (excluding optional words) and moves them to a target directory.
+
+## Notes
+- `tools/archive/` contains older scripts kept for historical reference.
