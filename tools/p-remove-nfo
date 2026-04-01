@@ -7,7 +7,7 @@ if [[ "$1" == "--include-0-downloads" ]]; then
   shift
 fi
 
-mount_points=(/mnt/d /mnt/e /mnt/f)
+mount_points=(/mnt/d /mnt/e /mnt/f /mnt/g)
 
 pids=()
 for mount_point in "${mount_points[@]}"; do

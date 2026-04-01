@@ -1,0 +1,4 @@
+#!/bin/bash
+# This script mounts drive D: using the generic mount script
+
+"$TOOLS_DIR/base_scripts/mount-drive-base" g 
