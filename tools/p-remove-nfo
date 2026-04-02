@@ -1,8 +1,6 @@
 #!/bin/bash
 # Run remove-nfo in parallel across multiple drives.
 
-set -euo pipefail
-
 INCLUDE_FLAG=""
 if [[ "${1:-}" == "--include-0-downloads" ]]; then
   INCLUDE_FLAG="$1"
