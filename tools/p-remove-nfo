@@ -1,16 +1,19 @@
 #!/bin/bash
 # Run remove-nfo in parallel across multiple drives.
 
+set -euo pipefail
+
 INCLUDE_FLAG=""
-if [[ "$1" == "--include-0-downloads" ]]; then
+if [[ "${1:-}" == "--include-0-downloads" ]]; then
   INCLUDE_FLAG="$1"
   shift
 fi
 
-mount_points=(/mnt/d /mnt/e /mnt/f /mnt/g /mnt/h mnt/i)
+drive_letters=(d e f g h i)
 
 pids=()
-for mount_point in "${mount_points[@]}"; do
+for drive in "${drive_letters[@]}"; do
+  mount_point="/mnt/$drive"
   args=()
   [[ -n "$INCLUDE_FLAG" ]] && args+=("$INCLUDE_FLAG")
   args+=("$mount_point")

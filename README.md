@@ -21,7 +21,7 @@ export TOOLS_DIR=/workspace/HP-Laptop-WSL-Files/tools
 - `tools/process_files`: Runs `remove-nfo`, `flatten-input`, and `sort-and-playlist` in sequence.
 - `tools/prep-folders`: For each immediate subdirectory, creates `0-Watched` and runs `flatten-input` inside that directory.
 - `tools/flatten-input`: Processes subfolders to:
-  - move a single media file (`*.[mM]*`) up one level,
+  - move a single media file whose extension starts with `m`/`M` up one level,
   - move multi-match folders to `0-MultiFile`,
   - move potential duplicates to `0-PossibleDuplicate`,
   - remove empty `0-*` folders (except `0-Downloads`, `0-Keep`, `0-Watched`).
@@ -31,17 +31,18 @@ export TOOLS_DIR=/workspace/HP-Laptop-WSL-Files/tools
 ### File removal helpers
 - `tools/remove-nfo [--include-0-downloads] [directory]`: Removes `*.nfo` recursively using `tools/base_scripts/remove-file`.
 - `tools/remove-m3u [directory]`: Removes `*.m3u` recursively using `tools/base_scripts/remove-file`.
-- `tools/p-remove-nfo [--include-0-downloads]`: Runs `remove-nfo` in parallel against `/mnt/d`, `/mnt/e`, and `/mnt/f`.
+- `tools/p-remove-nfo [--include-0-downloads]`: Runs `remove-nfo` in parallel against `/mnt/d` through `/mnt/i` (generated from a drive-letter list in the script).
 - `tools/base_scripts/remove-file [--include-0-downloads] [directory] [pattern]`: Generic recursive delete utility; excludes `0-Downloads` by default.
 
 ### Drive mounting
-- `tools/mount-drive-d`, `tools/mount-drive-e`, `tools/mount-drive-f`: Mount one Windows drive each via `tools/base_scripts/mount-drive-base`.
-- `tools/mount-drives`: Mounts drives `d`, `e`, and `f` in one call.
+- `tools/mount-drive-d`, `tools/mount-drive-e`, `tools/mount-drive-f`, `tools/mount-drive-g`, `tools/mount-drive-h`, `tools/mount-drive-i`: Mount one Windows drive each via `tools/base_scripts/mount-drive-base`.
+- `tools/mount-drives`: Mounts drives `d` through `i` in one call (iterates a drive-letter list).
 - `tools/base_scripts/mount-drive-base <drive_letter>`: Core mount logic using `drvfs`.
 
 ### Search and move utilities
-- `tools/get-all-of-interest-wrapper [-m maxdepth] [-t target_dir] [-e exclude_word] word...`: Wrapper around external `get-all-of-interest`.
+- `tools/get-all-of-interest-wrapper [-m maxdepth] [-t target_dir] [-e exclude_word] word...`: Wrapper around external `get-all-of-interest` using `-c` for target directory pass-through.
 - `tools/move-all [-m maxdepth] [-t target_dir] [-e exclude_word] word...`: Finds files containing all words (excluding optional words) and moves them to a target directory.
 
 ## Notes
 - `tools/archive/` contains older scripts kept for historical reference.
+- There is a temporary editor swap file at `tools/.move-all.swp`.

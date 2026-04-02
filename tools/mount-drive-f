@@ -1,4 +1,4 @@
 #!/bin/bash
-# This script mounts drive D: using the generic mount script
+# This script mounts drive F: using the generic mount script.
 
-"$TOOLS_DIR/base_scripts/mount-drive-base" f 
+"$TOOLS_DIR/base_scripts/mount-drive-base" f
