@@ -1,9 +1,10 @@
 #!/bin/bash
-# This script mounts all standard drives used on laptop
+# Mount all standard drives used on this laptop.
 
-"$TOOLS_DIR/mount-drive-d"
-"$TOOLS_DIR/mount-drive-e"
-"$TOOLS_DIR/mount-drive-f"
-"$TOOLS_DIR/mount-drive-g"
-"$TOOLS_DIR/mount-drive-h"
-"$TOOLS_DIR/mount-drive-i"
+set -euo pipefail
+
+drive_letters=(d e f g h i)
+
+for drive in "${drive_letters[@]}"; do
+  "$TOOLS_DIR/mount-drive-$drive"
+done
