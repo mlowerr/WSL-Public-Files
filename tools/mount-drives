@@ -1,8 +1,6 @@
 #!/bin/bash
 # Mount all standard drives used on this laptop.
 
-set -euo pipefail
-
 drive_letters=(d e f g h i)
 
 for drive in "${drive_letters[@]}"; do
