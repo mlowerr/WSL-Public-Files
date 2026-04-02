@@ -30,9 +30,10 @@ export TOOLS_DIR="$HOME/tools"
 PATH=$PATH:$TOOLS_DIR
 
 alias cls='clear'
+alias ds='du -h --max-depth=1 | sort -hr'
 
 dl() {
-    cd /mnt/c/users/matt/downloads/0-Complete
+    cd /mnt/d/0-Complete
 }
 
 
