@@ -31,10 +31,4 @@ PATH=$PATH:$TOOLS_DIR
 
 alias cls='clear'
 alias ds='du -h --max-depth=1 | sort -hr'
-
-dl() {
-    cd /mnt/d/0-Complete
-}
-
-
-
+alias dl='cd /mnt/d/0-Complete'
