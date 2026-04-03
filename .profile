@@ -32,3 +32,5 @@ PATH=$PATH:$TOOLS_DIR
 alias cls='clear'
 alias ds='du -h --max-depth=1 | sort -hr'
 alias dl='cd /mnt/d/0-Complete'
+
+export mp4recode='find . -maxdepth 1 -type f \( -iname '\''*.mp4'\'' -o -iname '\''*.MP4'\'' \) -exec bash -c '\''for f; do ffmpeg -i "$f" -c:v libx264 -crf 28 -c:a aac -b:a 128k "${f%.*}_.mp4"; done'\'' bash {} +'
