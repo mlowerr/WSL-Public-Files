@@ -88,6 +88,8 @@ fi
 #export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
 
 # some more ls aliases
+alias ls='ls -al'
+alias lsr='ls -alR'
 alias ll='ls -alF'
 alias la='ls -A'
 alias l='ls -CF'
@@ -121,3 +123,15 @@ if ! shopt -oq posix; then
     . /etc/bash_completion
   fi
 fi
+
+#start docker ai-coding-agent container instance
+ai-agents() {
+  docker run --rm -it \
+    -v "$PWD":/workspace \
+    -v "$HOME/.codex":/home/dev/.codex \
+    -v "$HOME/.claude":/home/dev/.claude \
+    -v "$HOME/.config/gemini":/home/dev/.config/gemini \
+    -v "$HOME/.kimi":/home/dev/.kimi \
+    -w /workspace \
+    ai-coding-agents:latest
+}
