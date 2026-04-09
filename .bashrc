@@ -101,6 +101,9 @@ alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo
 # Custom alias for disk usage summary
 alias ds='du -h --max-depth=1 | sort -hr'
 
+alias cls='clear'
+alias dl='cd /mnt/d/0-Complete'
+
 # Custom alias to clean filenames of Windows-incompatible characters
 alias clean-names='find . -depth -exec bash -c '\''for f do n="${f//[<>:\"\\|?*]/}"; [[ "$f" != "$n" ]] && mv -- "$f" "$n"; done'\'' bash {} +'
 
@@ -123,6 +126,11 @@ if ! shopt -oq posix; then
     . /etc/bash_completion
   fi
 fi
+
+export TOOLS_DIR="$HOME/tools"
+PATH=$PATH:$TOOLS_DIR
+
+export mp4recode='find . -maxdepth 1 -type f \( -iname '\''*.mp4'\'' -o -iname '\''*.MP4'\'' \) -exec bash -c '\''for f; do ffmpeg -i "$f" -c:v libx264 -crf 28 -c:a aac -b:a 128k "${f%.*}_.mp4"; done'\'' bash {} +'
 
 #start docker ai-coding-agent container instance
 ai-agents() {
