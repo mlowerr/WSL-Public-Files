@@ -25,3 +25,8 @@ fi
 if [ -d "$HOME/.local/bin" ] ; then
     PATH="$HOME/.local/bin:$PATH"
 fi
+
+
+
+#keep as last line
+eval "$(oh-my-posh init bash --config /home/matt/.cache/oh-my-posh/themes/modified_powerlevel10k_classic.omp.json)"
