@@ -105,6 +105,8 @@ alias ds='du -h --max-depth=1 | sort -hr'
 # Custom alias to clean filenames of Windows-incompatible characters
 alias clean-names='find . -depth -exec bash -c '\''for f do n="${f//[<>:\"\\|?*]/}"; [[ "$f" != "$n" ]] && mv -- "$f" "$n"; done'\'' bash {} +'
 
+alias plan-move='/home/matt/git/bd-archival-prep/scripts/unix/lib/plan_and_move.sh'
+
 # Alias definitions.
 # You may want to put all your additions into a separate file like
 # ~/.bash_aliases, instead of adding them here directly.
