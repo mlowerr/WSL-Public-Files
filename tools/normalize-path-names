@@ -1,0 +1,217 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+usage() {
+    cat <<'USAGE'
+Usage: normalize-path-names [--dry-run]
+
+Recursively normalize file and folder names under the current directory.
+
+Rules:
+  1. Remove leading whitespace before the first non-whitespace character.
+  2. Replace all remaining whitespace characters with underscores.
+  3. Convert bracketed text from [text] to text--.
+  4. Delete folders named SCR, Screenshot, Screenlist, screenshot, or screenlist.
+
+Options:
+  -n, --dry-run  Print planned renames/deletions without changing files.
+  -h, --help     Show this help.
+USAGE
+}
+
+DRY_RUN=0
+
+while (($#)); do
+    case "$1" in
+        -n|--dry-run)
+            DRY_RUN=1
+            shift
+            ;;
+        -h|--help)
+            usage
+            exit 0
+            ;;
+        --)
+            shift
+            break
+            ;;
+        -*)
+            echo "ERROR: Unknown option: $1" >&2
+            usage >&2
+            exit 2
+            ;;
+        *)
+            echo "ERROR: This script does not accept positional arguments." >&2
+            usage >&2
+            exit 2
+            ;;
+    esac
+done
+
+if (($#)); then
+    echo "ERROR: This script does not accept positional arguments." >&2
+    usage >&2
+    exit 2
+fi
+
+ROOT_DIR=$(pwd -P)
+
+paths_renamed=0
+folders_deleted=0
+unique_suffixes_used=0
+skipped_empty_names=0
+
+path_dirname() {
+    local path=$1
+    if [[ $path == */* ]]; then
+        printf '%s' "${path%/*}"
+    else
+        printf '.'
+    fi
+}
+
+path_basename() {
+    local path=$1
+    printf '%s' "${path##*/}"
+}
+
+normalize_name() {
+    local value=$1
+
+    value=${value#"${value%%[!$' \t\r\n\v\f']*}"}
+    value=${value//[$' \t\r\n\v\f']/_}
+
+    while [[ $value =~ ^(.*)\[([^][]+)\](.*)$ ]]; do
+        value="${BASH_REMATCH[1]}${BASH_REMATCH[2]}--${BASH_REMATCH[3]}"
+    done
+
+    printf '%s' "$value"
+}
+
+unique_target() {
+    local dir=$1
+    local base=$2
+    local original_path=${3:-}
+    local candidate="$dir/$base"
+    local stem ext n
+
+    if [[ ! -e $candidate || ( -n $original_path && $candidate == "$original_path" ) ]]; then
+        printf '%s' "$candidate"
+        return 0
+    fi
+
+    stem=$base
+    ext=""
+    if [[ $base == *.* && $base != .* ]]; then
+        stem=${base%.*}
+        ext=.${base##*.}
+    fi
+
+    n=1
+    while :; do
+        candidate="$dir/${stem}__${n}${ext}"
+        if [[ ! -e $candidate || ( -n $original_path && $candidate == "$original_path" ) ]]; then
+            printf '%s' "$candidate"
+            return 0
+        fi
+        ((++n))
+    done
+}
+
+run_mv() {
+    local source=$1
+    local target=$2
+
+    if [[ $source == "$target" ]]; then
+        return 0
+    fi
+
+    if ((DRY_RUN)); then
+        echo "DRY-RUN: mv -- '$source' '$target'"
+    else
+        mv -- "$source" "$target"
+    fi
+}
+
+run_rm_dir() {
+    local dir=$1
+
+    if ((DRY_RUN)); then
+        echo "DRY-RUN: rm -rf -- '$dir'"
+    else
+        rm -rf -- "$dir"
+    fi
+}
+
+rename_path() {
+    local source=$1
+    local dir base newbase target target_base
+
+    dir=$(path_dirname "$source")
+    base=$(path_basename "$source")
+    newbase=$(normalize_name "$base")
+
+    if [[ $base == "$newbase" ]]; then
+        return 0
+    fi
+
+    if [[ -z $newbase ]]; then
+        echo "SKIP: '$source' would become an empty name."
+        ((++skipped_empty_names))
+        return 0
+    fi
+
+    target=$(unique_target "$dir" "$newbase" "$source")
+    target_base=$(path_basename "$target")
+    if [[ $target_base != "$newbase" ]]; then
+        echo "Using unique target for collision: $target"
+        ((++unique_suffixes_used))
+    fi
+
+    echo "Rename:"
+    echo "  FROM: $source"
+    echo "  TO:   $target"
+    run_mv "$source" "$target"
+    ((++paths_renamed))
+}
+
+delete_named_folder() {
+    local dir=$1
+    local base
+
+    base=$(path_basename "$dir")
+    case "$base" in
+        SCR|Screenshot|Screenlist|screenshot|screenlist)
+            echo "Deleting folder: $dir"
+            run_rm_dir "$dir"
+            ((++folders_deleted))
+            ;;
+    esac
+}
+
+if ((DRY_RUN)); then
+    echo "Normalizing names under: $ROOT_DIR (dry run)"
+else
+    echo "Normalizing names under: $ROOT_DIR"
+fi
+echo
+
+echo "Step 1-3: Normalizing file and folder names..."
+while IFS= read -r -d '' path; do
+    rename_path "$path"
+done < <(find "$ROOT_DIR" -depth -mindepth 1 -print0)
+
+echo
+echo "Step 4: Deleting matching screenshot folders..."
+while IFS= read -r -d '' dir; do
+    delete_named_folder "$dir"
+done < <(find "$ROOT_DIR" -depth -mindepth 1 -type d -print0)
+
+echo
+echo "Summary:"
+printf '  Paths renamed:         %d\n' "$paths_renamed"
+printf '  Folders deleted:       %d\n' "$folders_deleted"
+printf '  Unique suffixes used:  %d\n' "$unique_suffixes_used"
+printf '  Empty-name skips:      %d\n' "$skipped_empty_names"
+
+echo "Normalization complete."
