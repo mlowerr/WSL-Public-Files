@@ -20,6 +20,7 @@ This repository is a collection of Bash utilities used in a WSL environment to m
   - `tools/prep-folders`: Creates `0-Watched` in each immediate child directory, then runs `flatten-input` inside each.
 - Cleanup/removal utilities:
   - `tools/clean_courses`: Requires an explicit target directory; supports `--dry-run`, `-t`/`--transcode`, repeatable `--source-prefix`, and `--get-files-dir`; cleans downloaded course trees by removing configured bracketed source-site prefixes from top-level directories, normalizing whitespace to underscores, hoisting `~Get Your Files Here !` folder contents, deleting Bonus Resources files, using deterministic collision suffixes, and optionally running `~/git/ffmpeg_utility_scripts/unix/transcode_all.sh -r` from the cleaned root after the summary.
+  - `tools/normalize-path-names`: Runs from the current directory; supports `--dry-run`; recursively renames files and folders by trimming leading whitespace, replacing remaining whitespace with underscores, converting `[text]` to `text--`, and applying deterministic `__1` collision suffixes; then deletes folders named `SCR`, `Screenshot`, `Screenlist`, `screenshot`, or `screenlist`.
   - `tools/remove-nfo`: Removes `*.nfo` files via `base_scripts/remove-file`; supports `--include-0-downloads`.
   - `tools/remove-m3u`: Removes `*.m3u` files via `base_scripts/remove-file`.
   - `tools/p-remove-nfo`: Runs `remove-nfo` in parallel for `/mnt/d` through `/mnt/i` (built from a drive-letter list).
