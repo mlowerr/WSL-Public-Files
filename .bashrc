@@ -107,10 +107,14 @@ alias clean-names='find . -depth -exec bash -c '\''for f do n="${f//[<>:\"\\|?*]
 
 alias plan-move='/home/matt/git/bd-archival-prep/scripts/unix/lib/plan_and_move.sh'
 
+pm() { 
+	/home/matt/git/bd-archival-prep/scripts/unix/lib/plan_and_move.sh --disk-size "$1" --base-name "$2"
+}
+
 # Alias definitions.
 # You may want to put all your additions into a separate file like
 # ~/.bash_aliases, instead of adding them here directly.
-# See /usr/share/doc/bash-doc/examples in the bash-doc package.
+# See /usrgshare/doc/bash-doc/examples in the bash-doc package.
 
 if [ -f ~/.bash_aliases ]; then
     . ~/.bash_aliases
@@ -131,3 +135,5 @@ export PATH="/home/matt/.local/bin:$PATH"
 
 ##keep this as last line for updating $PS1...
 eval "$(oh-my-posh init bash --config /home/matt/.cache/oh-my-posh/themes/modified_powerlevel10k_classic.omp.json)"
+
+
