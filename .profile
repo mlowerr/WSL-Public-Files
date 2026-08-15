@@ -26,6 +26,10 @@ if [ -d "$HOME/.local/bin" ] ; then
     PATH="$HOME/.local/bin:$PATH"
 fi
 
+# Load media-folder cleanup aliases when the repository tools are installed.
+if [ -f "$HOME/tools/media-cleanup-aliases" ]; then
+    . "$HOME/tools/media-cleanup-aliases"
+fi
 
 
 #keep as last line

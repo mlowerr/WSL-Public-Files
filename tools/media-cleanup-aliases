@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+
+# Source this file from Bash to add media-folder cleanup aliases.
+
+alias hoist-video-files='find . -mindepth 1 -maxdepth 1 -type d -print0 | while IFS= read -r -d "" dir; do
+    (
+        cd "$dir" || exit
+        shopt -s nullglob
+        files=(Vid*/*)
+        ((${#files[@]})) && mv -- "${files[@]}" .
+    )
+done'
+
+alias delete-empty-video-dirs='find . -mindepth 2 -maxdepth 2 -type d -name '\''Videos'\'' -empty -delete'
+
+alias organize-video-folders='hoist-video-files && delete-empty-video-dirs'
+
+alias delete-screen-dirs='shopt -s globstar && rm -rf -- **/{S,s}screen{,s,list}'

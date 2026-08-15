@@ -5,6 +5,7 @@ Bash utilities for media-file cleanup/organization and Windows drive mounting in
 ## Getting started
 1. Set `TOOLS_DIR` so wrapper scripts can find shared helpers.
 2. Ensure scripts are executable (`chmod +x tools/* tools/base_scripts/*` if needed).
+3. Install or link `tools/` at `~/tools`; `.profile` sources `~/tools/media-cleanup-aliases` when it exists.
 
 ```bash
 export TOOLS_DIR=/workspace/HP-Laptop-WSL-Files/tools
@@ -18,6 +19,11 @@ export TOOLS_DIR=/workspace/HP-Laptop-WSL-Files/tools
 ## Script overview
 
 ### Cleanup and organization
+- `tools/media-cleanup-aliases`: A source-only Bash script that provides these current-directory aliases:
+  - `hoist-video-files`: For every immediate child directory, moves matches beneath `Vid*` directories into that child directory.
+  - `delete-empty-video-dirs`: Deletes empty `Videos` directories exactly two levels below the current directory.
+  - `organize-video-folders`: Runs `hoist-video-files`, then `delete-empty-video-dirs` if hoisting succeeds.
+  - `delete-screen-dirs`: Enables recursive globbing and removes directories matching `{S,s}screen{,s,list}` recursively.
 - `tools/process_files`: Runs `remove-nfo`, `flatten-input`, and `sort-and-playlist` in sequence.
 - `tools/prep-folders`: For each immediate subdirectory, creates `0-Watched` and runs `flatten-input` inside that directory.
 - `tools/flatten-input`: Processes subfolders to:
