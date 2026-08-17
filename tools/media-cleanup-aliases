@@ -15,4 +15,4 @@ alias delete-empty-video-dirs='find . -mindepth 2 -maxdepth 2 -type d -name '\''
 
 alias organize-video-folders='hoist-video-files && delete-empty-video-dirs'
 
-alias delete-screen-dirs='( shopt -s globstar &&  for d in **/{\!,_,}{S,s}creen{,s,{L,l}ist{s,}}  **/{\!,_,}{SCR,scr,Скриплисты}; do [ -d "$d" ] && rm -rf -- "$d"; ) done '
+alias delete-screen-dirs='( shopt -s globstar && for d in **/{\!,_,}{S,s}creen{,s,{L,l}ist{s,}} **/{\!,_,}{SCR,scr,Скриплисты}; do [ -d "$d" ] && rm -rf -- "$d"; done )'

@@ -23,7 +23,7 @@ export TOOLS_DIR=/workspace/HP-Laptop-WSL-Files/tools
   - `hoist-video-files`: For every immediate child directory, moves matches beneath `Vid*` directories into that child directory.
   - `delete-empty-video-dirs`: Deletes empty `Videos` directories exactly two levels below the current directory.
   - `organize-video-folders`: Runs `hoist-video-files`, then `delete-empty-video-dirs` if hoisting succeeds.
-  - `delete-screen-dirs`: Enables recursive globbing and removes directories matching `{S,s}screen{,s,list}` recursively.
+  - `delete-screen-dirs`: Runs its recursive-globbing `for` loop in a subshell and removes directories matching the screen-artifact patterns recursively without changing the caller's shell options.
 - `tools/process_files`: Runs `remove-nfo`, `flatten-input`, and `sort-and-playlist` in sequence.
 - `tools/prep-folders`: For each immediate subdirectory, creates `0-Watched` and runs `flatten-input` inside that directory.
 - `tools/flatten-input`: Processes subfolders to:
