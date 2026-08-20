@@ -111,6 +111,28 @@ pm() {
 	/home/matt/git/bd-archival-prep/scripts/unix/lib/plan_and_move.sh --disk-size "$1" --base-name "$2"
 }
 
+pma() {
+    local start_dir="$PWD"
+
+    for dir in */; do
+        [ -d "$dir" ] || continue
+        
+        # Strip the trailing slash to isolate just the directory name
+        local dir_name="${dir%/}"
+        
+        if cd "$dir"; then
+            pm "50" "$dir_name"
+            rm -rf .archival-prep
+            cd "$start_dir" || return 1
+        else
+            echo "Error: Could not enter $dir" >&2
+        fi
+    done
+
+    mv */*-Disk* .
+    find . -mindepth 1 -maxdepth 5 -type d -empty -delete
+}
+
 # Alias definitions.
 # You may want to put all your additions into a separate file like
 # ~/.bash_aliases, instead of adding them here directly.
