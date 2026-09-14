@@ -93,7 +93,7 @@ alias la='ls -A'
 alias l='ls -CF'
 
 
-export TOOLS_DIR="/home/matt/tools/"
+export TOOLS_DIR="$HOME/tools/"
 
 # Add an "alert" alias for long running commands.  Use like so:
 #   sleep 10; alert
@@ -105,10 +105,10 @@ alias ds='du -h --max-depth=1 | sort -hr'
 # Custom alias to clean filenames of Windows-incompatible characters
 alias clean-names='find . -depth -exec bash -c '\''for f do n="${f//[<>:\"\\|?*]/}"; [[ "$f" != "$n" ]] && mv -- "$f" "$n"; done'\'' bash {} +'
 
-alias plan-move='/home/matt/git/bd-archival-prep/scripts/unix/lib/plan_and_move.sh'
+alias plan-move='$HOME/matt/git/bd-archival-prep/scripts/unix/lib/plan_and_move.sh'
 
 pm() { 
-	/home/matt/git/bd-archival-prep/scripts/unix/lib/plan_and_move.sh --disk-size "$1" --base-name "$2"
+	"$HOME/git/bd-archival-prep/scripts/unix/lib/plan_and_move.sh" --disk-size "$1" --base-name "$2"
 }
 
 pma() {
@@ -129,7 +129,7 @@ pma() {
         fi
     done
 
-    mv */*-Disk* .
+    mv */*GiB* .
     find . -mindepth 1 -maxdepth 5 -type d -empty -delete
 }
 
@@ -156,6 +156,6 @@ export PATH="/home/matt/.local/bin:$PATH"
 
 
 ##keep this as last line for updating $PS1...
-eval "$(oh-my-posh init bash --config /home/matt/.cache/oh-my-posh/themes/modified_powerlevel10k_classic.omp.json)"
+eval "$(oh-my-posh init bash --config $HOME/matt/.cache/oh-my-posh/themes/modified_powerlevel10k_classic.omp.json)"
 
 
