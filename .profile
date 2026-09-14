@@ -33,4 +33,4 @@ fi
 
 
 #keep as last line
-eval "$(oh-my-posh init bash --config /home/matt/.cache/oh-my-posh/themes/modified_powerlevel10k_classic.omp.json)"
+eval "$(oh-my-posh init bash --config $HOME/.cache/oh-my-posh/themes/modified_powerlevel10k_classic.omp.json)"
